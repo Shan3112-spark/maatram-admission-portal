@@ -1,0 +1,38 @@
+[
+    {
+        "name": "Shanmathi K",
+        "application_id": "25BEI046",
+        "email": "shan311207@gmail.com",
+        "phone": "6382692599",
+        "dob": "2007-12-31",
+        "photo_path": "uploads\\e9780aa8-260e-423a-805d-c8f944e25f73_e6953a59-24b4-4601-a5e8-25c65599f8f5.jpg",
+        "marksheet_path": "uploads\\067a035e-66b5-444e-9a13-a7721d2825b0_WhatsApp Image 2026-11-22 at 1.01.58 AM.jpeg",
+        "marks": {
+            "Mathematics": 45,
+            "Physics": 45,
+            "Chemistry": 40,
+            "English": 79,
+            "Computer Science": 57
+        },
+        "status": "Rejected",
+        "submitted_at": "2026-11-22T01:04:24.283076"
+    },
+    {
+        "name": "Shanmathi K",
+        "application_id": "12345",
+        "email": "shan311207@gmail.com",
+        "phone": "6382692599",
+        "dob": "2007-12-31",
+        "photo_path": "uploads\\55994214-3de1-44ec-8d00-25a826b8b741_Shan profile.jpeg",
+        "marksheet_path": "uploads\\475475d6-f774-4771-9c47-9eb580daca79_WhatsApp Image 2026-11-22 at 1.01.58 AM.jpeg",
+        "marks": {
+            "Mathematics": 45,
+            "Physics": 43,
+            "Chemistry": 65,
+            "English": 79,
+            "Computer Science": 56
+        },
+        "status": "Rejected",
+        "submitted_at": "2026-11-22T12:23:59.541863"
+    }
+]
