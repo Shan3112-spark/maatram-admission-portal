@@ -6,7 +6,11 @@ from pathlib import Path
 from datetime import datetime
 import pytesseract
 
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+# Use the Windows Tesseract path on a local Windows computer.
+# On Streamlit Cloud/Linux, pytesseract uses the installed "tesseract" command.
+WINDOWS_TESSERACT = Path(r"C:\Program Files\Tesseract-OCR\tesseract.exe")
+if WINDOWS_TESSERACT.exists():
+    pytesseract.pytesseract.tesseract_cmd = str(WINDOWS_TESSERACT)
 
 # ==========================================
 # 1. PAGE CONFIGURATION
@@ -234,6 +238,23 @@ def save_applications(applications):
         json.dumps(applications, indent=4),
         encoding="utf-8"
     )
+
+
+def delete_uploaded_file(relative_path):
+    """Delete an uploaded file only if it is inside this project's uploads folder."""
+    if not relative_path:
+        return
+
+    try:
+        file_path = (BASE_DIR / relative_path).resolve()
+        upload_dir = UPLOAD_DIR.resolve()
+
+        # Prevent deleting files outside the uploads folder.
+        if upload_dir in file_path.parents and file_path.is_file():
+            file_path.unlink()
+    except (OSError, ValueError):
+        # Continue deleting the application record even if a file is already missing.
+        pass
 
 
 # ==========================================
@@ -555,7 +576,7 @@ else:
 
                     st.write("**Current Status:**", app["status"])
 
-                    col1, col2 = st.columns(2)
+                    col1, col2, col3 = st.columns(3)
 
                     with col1:
                         if st.button("Approve", key=f"approve_{index}"):
@@ -570,6 +591,47 @@ else:
                             save_applications(applications)
                             st.warning("Application rejected.")
                             st.rerun()
+
+                    with col3:
+                        if st.button("Delete", key=f"delete_{index}"):
+                            st.session_state[f"confirm_delete_{index}"] = True
+                            st.rerun()
+
+                    # Ask for confirmation before permanently deleting the application.
+                    if st.session_state.get(f"confirm_delete_{index}", False):
+                        st.warning(
+                            f"Are you sure you want to permanently delete "
+                            f"{app['name']}'s application ({app['application_id']})?"
+                        )
+
+                        confirm_col, cancel_col = st.columns(2)
+
+                        with confirm_col:
+                            if st.button(
+                                "Yes, Delete Permanently",
+                                key=f"confirm_delete_yes_{index}"
+                            ):
+                                delete_uploaded_file(app.get("photo_path"))
+                                delete_uploaded_file(app.get("marksheet_path"))
+
+                                applications.pop(index)
+                                save_applications(applications)
+
+                                st.session_state.pop(
+                                    f"confirm_delete_{index}", None
+                                )
+                                st.success("Application and uploaded documents deleted.")
+                                st.rerun()
+
+                        with cancel_col:
+                            if st.button(
+                                "Cancel",
+                                key=f"confirm_delete_no_{index}"
+                            ):
+                                st.session_state.pop(
+                                    f"confirm_delete_{index}", None
+                                )
+                                st.rerun()
 
 
 # ==========================================
